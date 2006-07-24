@@ -1,4 +1,7 @@
 Revision history for Perl extension Test::Use.
 
+0.02  2006/07/24
+  - oops. forgot to modify Makefile.PL
+
 0.01  2006/07/24
   - initial release
