@@ -3,7 +3,7 @@ package Test::Use;
 use strict;
 use warnings;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 use Exporter;
 
@@ -35,9 +35,12 @@ READ:
 
   plan tests => scalar @modules;
 
+  my @failed;
   foreach my $module (@modules) {
-    use_ok($module);
+    use_ok($module) or push @failed, $module;
   }
+
+  BAIL_OUT( 'failed: ' . (join ',', @failed) ) if @failed;
 }
 
 1;
@@ -69,9 +72,12 @@ Test::Use - do use_ok() for all modules MANIFESTed
 
 =head1 DESCRIPTION
 
-I'm sick of writing 01_load.t (or something like that) that'll do
-use_ok() for every module I write. This module reads MANIFEST to
+I'm sick of writing 00_load.t (or something like that) that'll do
+use_ok() for every module I write. I'm sicker of updating 00_load.t
+when I add another file to the distro. This module reads MANIFEST to
 find modules to be tested and does use_ok() for each of them.
+Now all you have to do is updating MANIFEST. You don't have to
+modify the test any more (hopefully).
 
 =head1 EXPORTED FUNCTIONS
 
@@ -82,6 +88,13 @@ Tests only modules under 'lib/' directory. If you have modules
 you don't want to test, give the module name(s) or regex rule
 for the argument. The word 'except' will be ignored as shown
 above.
+
+=head1 NOTES
+
+As of 0.03, this module calls BAIL_OUT of Test::More if any of
+the use_ok tests should fail. (Thus the following tests will be
+ignored. Missing or unloadable modules cause a lot of errors of
+the same kind.)
 
 =head1 SEE ALSO
 
